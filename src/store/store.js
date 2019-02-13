@@ -234,7 +234,7 @@ export const store = new Vuex.Store({
     
   },
   getters: {
-    
+    inCart: state => state.inCart,
     getProductData(state) {
       return state.productsData;
     },

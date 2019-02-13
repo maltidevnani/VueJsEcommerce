@@ -192,6 +192,16 @@ export const store = new Vuex.Store({
       
       console.log("Malti Calling");      
     },
+    addToCart(state, data) {
+      state.productsData.forEach((el) => {
+        if (data.id === el.id) {
+          el.quantity = data.quantity;
+          console.log("Product quantity is " + el.quantity);
+          state.inCart.push(data.id);
+          console.log("Product id is " + el.quantity);
+        }
+      });
+    },
     
   },
   getters: {

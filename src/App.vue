@@ -32,10 +32,4 @@ export default {
   color: crimson;
   font-weight: bolder;
 }
-
-
-
-
-
-
 </style>

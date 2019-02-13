@@ -2,7 +2,7 @@
   <v-app>
     <v-container class="mainContainer" grid-list-md text-xs-center>
       <v-layout row wrap class="gridLayoutClass">
-        <v-flex v-for="product in productsData" :key="product.id" xs4 sm6 md4>
+        <v-flex v-for="product in $store.state.productsData" :key="product.id" xs4 sm6 md4>
           <v-hover>
             <v-card
               slot-scope="{ hover }"
@@ -24,14 +24,18 @@
                   <h5>0</h5>
                 </v-btn>
                 <div>
-                  <h3 class="headline">{{product.title}}</h3>
-                  <div>Located two hours south of</div>
+                  <h4 class="subheadingClass">{{product.title}}</h4>
+                  <h3 class="subheadingClass">{{product.rate}}</h3>
+                   <v-rating class="justify-center" v-model="product.rating"></v-rating>
+                   <h3 class="subheadingClass"
+                   v-bind:id="product.quantity">{{product.quantity}}</h3>
                 </div>
-                <v-rating v-model="product.rating"></v-rating>
-              </v-card-title>
-              <v-card-actions class="justify-center">
-                <v-btn dark color="blue">Share</v-btn>
-                <v-btn dark color="blue" v-bind:id="product.id">View Detail</v-btn>
+                </v-card-title>
+                <v-card-actions class="justify-center">
+                <v-btn dark color="blue" v-bind:id="product.id"
+                @click="addProduct(product)">Add To Cart</v-btn>
+                <v-btn dark color="blue" v-bind:id="product.id"
+                 @click="moveToProductDetail(product.id)">View Detail</v-btn>
               </v-card-actions>
             </v-card>
           </v-hover>
@@ -43,54 +47,26 @@
 
 <script>
 export default {
-  name: 'App',
+  name: 'products',
   data() {
     return {
-      productsData: [
-        {
-          productImage: '/static/clothes.jpg',
-          id: 1,
-          title: 'Clothes',
-          rating: 3,
-          rate: '$12.99',
-        },
-        {
-          productImage: '/static/jwellery.jpg',
-          id: 2,
-          title: 'Earing',
-          rating: 4,
-          rate: '$10.99',
-        },
-        {
-          productImage: '/static/perfume.jpeg',
-          id: 3,
-          title: 'Perfume',
-          rating: 5,
-          rate: '$15.99',
-        },
-        {
-          productImage: '/static/watches.jpg',
-          id: 4,
-          title: 'Watch',
-          rating: 1,
-          rate: '$19.99',
-        },
-        {
-          productImage: '/static/choclate.jpg',
-          id: 5,
-          title: 'Choclate',
-          rating: 2,
-          rate: '$9.99',
-        },
-        {
-          productImage: '/static/shooes.jpg',
-          id: 6,
-          title: 'Shooes',
-          rating: 3,
-          rate: '$24.99',
-        },
-      ],
+      totalCountProduct: 0,
     };
+  },
+  methods: {
+    moveToProductDetail(id) {
+      console.log(id);
+      this.$router.push({ name: 'productDetail', params: { Pid: id } });
+    },
+    addProduct(prod) {
+      console.log(prod);
+         const data = {
+          id: prod.id,
+          quantity: prod.quantity + 1,
+        };
+      console.log(data);
+      this.$store.commit('addToCart', data);
+    },
   },
 };
 </script>
@@ -120,5 +96,9 @@ export default {
   text-align: left;
   font-weight: bold;
 }
+.subheadingClass{
+  text-align: left;
+}
+
 </style>
 

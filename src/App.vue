@@ -10,7 +10,7 @@
       <v-icon>mdi-cart</v-icon>
     </v-badge>
       <v-btn flat to="/login" class="white--text">LogIn</v-btn>
-      <v-btn flat class="white--text">SignUp</v-btn>
+      <v-btn flat to="/profile" class="white--text">SignUp</v-btn>
       </v-toolbar-items>
       </v-toolbar>
   <router-view></router-view>

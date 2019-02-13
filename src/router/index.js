@@ -5,6 +5,7 @@ import Profile from '@/components/Profile';
 import Products from '@/components/Products';
 import ProductDetail from '@/components/ProductDetail';
 import Comments from '@/components/Comments';
+import Login from '@/components/Login';
 
 Vue.use(Router);
 

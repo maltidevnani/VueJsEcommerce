@@ -23,8 +23,13 @@ module.exports = {
   },
   // add your custom rules here
   rules: {
+    "no-param-reassign": [2, { "props": false }],
     "linebreak-style": "off",
-    indent: ["error", 2],
+    "no-console": "off",
+    "indent": "off",
+    "import/prefer-default-export": "off",
+    //indent: ["error", 2],
+   
     // don't require .vue extension when importing
     "import/extensions": [
       "error",
@@ -37,7 +42,7 @@ module.exports = {
     // disallow reassignment of function parameters
     // disallow parameter object manipulation except for specific exclusions
     "no-param-reassign": [
-      "error",
+      0,
       {
         props: true,
         ignorePropertyModificationsFor: [

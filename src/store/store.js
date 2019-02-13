@@ -202,6 +202,20 @@ export const store = new Vuex.Store({
         }
       });
     },
+    addOrRemoveProduct(state, data) {
+      state.productsData.forEach((el) => {
+        if (data.id === el.id) {
+          if (data.operation === 'add') {
+            el.quantity += 1;
+          } else if (data.operation === 'remove' && el.quantity > 0) {
+            el.quantity -= 1;
+          } else {
+            el.quantity = 0;
+          }
+          console.log(el.quantity);
+        }
+      });
+    },
     
   },
   getters: {

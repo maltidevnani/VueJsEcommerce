@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Login from '@/components/Login';
 import Payment from '@/components/Payment';
+import Profile from '@/components/Profile';
 import Products from '@/components/Products';
 
 Vue.use(Router);
@@ -9,9 +9,15 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
+    },
+
+    {
       path: '/login',
       name: 'Login',
-      component: Login,
+      component: Products,
     },
     {
       path: '/payment',
@@ -21,7 +27,7 @@ export default new Router({
     {
       path: '/',
       name: 'Products',
-      component: Products,
+      component: Profile,
     },
   ],
 });

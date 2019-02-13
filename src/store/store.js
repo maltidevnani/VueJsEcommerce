@@ -216,6 +216,21 @@ export const store = new Vuex.Store({
         }
       });
     },
+    addReview(state, data) {
+      console.log('add review', data);
+      state.productsData.forEach((el) => {
+        if (data.id === el.id) {
+          const review = {
+            rId: el.reviews.length + 1,
+            rName: data.name,
+            rImage: '',
+            review: data.review,
+          };
+          console.log(el);
+          el.reviews.push(review);
+        }
+      });
+    },
     
   },
   getters: {

@@ -6,6 +6,7 @@ import Products from '@/components/Products';
 import ProductDetail from '@/components/ProductDetail';
 import Comments from '@/components/Comments';
 import Login from '@/components/Login';
+import ShoppingCart from '@/components/ShoppingCart';
 
 Vue.use(Router);
 
@@ -15,6 +16,11 @@ export default new Router({
       path: '/profile',
       name: 'Profile',
       component: Profile,
+    },
+    {
+      path: '/shopping',
+      name: 'ShoppingCart',
+      component: ShoppingCart,
     },
 
     {

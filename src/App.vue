@@ -4,11 +4,8 @@
   <v-toolbar-side-icon></v-toolbar-side-icon>
     <v-toolbar-title class="toolbarTitleClass">One Stop Shopping Center</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-toolbar-items class="hidden-sm-and-down">
-     <v-badge class="badgeMarginClass">
-      <span slot="badge">{{numInCart}}</span>
-      <v-icon>mdi-cart</v-icon>
-    </v-badge>
+    <ShoppingCart/>
+    <v-toolbar-items class="hidden-sm-and-down">     
       <v-btn flat to="/login" class="white--text">LogIn</v-btn>
       <v-btn flat to="/profile" class="white--text">SignUp</v-btn>
       </v-toolbar-items>
@@ -19,6 +16,7 @@
 
 <script>
 import Product from '@/components/Products';
+import ShoppingCart from '@/components/ShoppingCart';
 export default {  
   name: 'App',
    data() {
@@ -31,6 +29,7 @@ export default {
   },
   components: {
     Product,
+    ShoppingCart,
   }
 };
 </script>

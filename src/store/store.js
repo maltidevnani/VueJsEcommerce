@@ -7,6 +7,8 @@ export const store = new Vuex.Store({
   state: {
     totalProductCount: 0,
     inCart: [],
+    userInfo: {
+    },
     productsData: [
       {
         productImage: '/static/clothes.jpg',
@@ -188,10 +190,6 @@ export const store = new Vuex.Store({
     productsData(state, productsData) {
       state.productsData = productsData;
     },
-    updateTotalProductCount(state){
-      
-      console.log("Malti Calling");      
-    },
     addToCart(state, data) {
       state.productsData.forEach((el) => {
         if (data.id === el.id) {
@@ -231,7 +229,10 @@ export const store = new Vuex.Store({
         }
       });
     },
-    
+    signUp(state,data){
+      console.log("use name is", data.name);      
+      state.userInfo = data;
+    },    
   },
   getters: {
     inCart: state => state.inCart,

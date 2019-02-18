@@ -10,8 +10,7 @@
           <div class="divContentClass">
             <h4 class="subheadingClass">{{product.title}}</h4>
             <h3 class="subheadingClass">{{product.productDetail}}</h3>
-            <h3 class="subheadingClass">{{product.rate}}</h3>
-            <h3 class="subheadingClass">{{product.reviews.length }}</h3>
+            <h3 class="subheadingClass">$ {{product.rate}}</h3>
             <v-rating class="justify-center" v-model="product.rating"></v-rating>
              <v-card-actions class="justify-center">
             <v-btn  color="blue" class="white--text"
@@ -25,7 +24,7 @@
             <v-btn  color="blue" class="white--text"
             @click="addOrRemoveProduct(product.id, 'add')">Add</v-btn>
             <v-btn  color="white" class="grey--text,subheadingClass"
-            v-model="product.quantity">{{product.quantity}}</v-btn>
+            v-model="product.quantity">{{product.quantity | convertToNum }}</v-btn>
             <v-btn color="blue" class="white--text"
              @click="addOrRemoveProduct(product.id, 'remove')">Remove</v-btn>
         </v-card-actions>
@@ -44,10 +43,6 @@ export default {
     };
   },
   methods: {
-      addProduct(id) {
-      console.log(id);
-      this.$store.commit('addProduct', id);
-    },
     addOrRemoveProduct(id, operation) {
       this.$store.commit('addOrRemoveProduct', {id: id, operation: operation});
     },
@@ -56,6 +51,16 @@ export default {
       this.$router.push({ name: 'commentPage', params: { Pid: id, mode: mode } });
     },
   },
+  // filter added to check true or false on remove of product
+  filters: {
+    convertToNum(value){
+      if(typeof value === 'boolean'){
+         return  value ? 1: 0;
+      }else{
+        return value;
+      }
+    }
+  }
 };
 </script>
 

@@ -1,31 +1,28 @@
 <template>
-  <div>
-    <table class="table">
+  <div>    
+    <v-badge ref="cartIcon" class="badgeMarginClass" >
+      <span slot="badge" >{{numInCart}}</span>
+      <v-icon v-on:click="showCart">mdi-cart</v-icon>
+    </v-badge>
+    <div ref="cartModal" id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span v-on:click="closeCart" class="close">&times;</span>
+        <table class="table">
             <tbody>
+              <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+              </tr>
               <tr v-for="item in cart" :key="item.id">
                 <td>{{ item.title }}</td>
                 <td>{{ item.quantity }}</td>
+                <td>{{ item.rate * item.quantity }}</td>
               </tr>
             </tbody>
           </table>
-    <button class="btn btn-primary" data-toggle="modal" data-target="#shoppingCart">Cart ({{ numInCart }})</button>
-    <div id="shoppingCart" class="modal fade">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Shopping cart</h5>
-            <button class="close" data-dismiss="modal">
-              &times;
-            </button>
-          </div>
-          <div class="modal-body">
-            
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-dismiss="modal">Keep shopping</button>
-            <button class="btn btn-primary">Check out</button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -42,13 +39,67 @@ export default {
           });
         });
       },
-  },
+    },
+    methods: {
+      showCart: () => {
+        console.log('Showing cart', this);
+        document.getElementById("myModal").style.display = "block";
+      },
+      closeCart: () => {
+        console.log('Showing cart', this);
+        document.getElementById("myModal").style.display = "none";
+      }
+    }
 }
 </script>
 <style>
 .badgeMarginClass{
   margin-top: 20px;
   margin-right: 10px;
+}
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 250px; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+td, th {
+  color: black;
+  text-align: center;
+  width: auto;
+  border: 1px solid grey;
+  padding: 5px 15px ;
 }
 </style>
 

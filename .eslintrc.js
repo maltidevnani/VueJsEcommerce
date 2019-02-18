@@ -29,6 +29,7 @@ module.exports = {
     "indent": "off",
     "import/prefer-default-export": "off",
     //indent: ["error", 2],
+    quotes: "off",
    
     // don't require .vue extension when importing
     "import/extensions": [

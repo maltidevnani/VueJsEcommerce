@@ -6,12 +6,14 @@
         <h1 class="login_title">Login Page</h1>
            <v-text-field
             v-model="email"
+            ref="email"
             :rules="[rules.required, rules.email]"
             label="E-mail">
            </v-text-field>
           <v-flex>
           <v-text-field
             v-model="password"
+            ref="password"
             :append-icon="show1 ? 'visibility_off' : 'visibility'"
             :rules="[rules.required, rules.min]"
             :type="show1 ? 'text' : 'password'"
@@ -22,7 +24,7 @@
             @click:append="show1 = !show1"
           ></v-text-field>
         </v-flex>
-          <v-btn color="info">Login</v-btn>
+          <v-btn color="info" @click="submit">Login</v-btn>
       </v-flex>
     </v-layout>
   </v-container>
@@ -33,8 +35,8 @@ export default {
   data() {
     return {
       title: 'Preliminary report',
-      email: '',
-      password: '',
+      email: null,
+      password: null,
       show1: false,
       rules: {
         required: value => !!value || 'Required.',
@@ -43,11 +45,36 @@ export default {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || 'Invalid e-mail.';
         },
-        min: v => v.length >= 8 || 'Min 8 characters',
+        min: v => (v && v.length >= 8) || 'Min 8 characters',
         emailMatch: () => ('The email and password you entered don\'t match'),
       },
     };
   },
+  computed: {
+      form () {
+        return {
+          email: this.email,
+          password: this.password
+        }
+      }
+    },
+  methods: {
+    submit () {
+      console.log("form", this.form);
+      let isFormValid = true;
+      Object.keys(this.form).forEach(f => {
+        if (!this.form[f]) {
+          this.$refs[f].validate(true);
+          isFormValid = false;
+        }
+      });
+      if (isFormValid) {
+        if (this.email === this.$store.state.userInfo.email && this.password === this.$store.state.userInfo.password) {
+          this.$router.push({ name: 'Products'});
+        }
+      }
+    },
+  }
 };
 </script>
 

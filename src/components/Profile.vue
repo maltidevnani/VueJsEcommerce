@@ -29,7 +29,7 @@
             ref="password"
             v-model="password"
             :append-icon="show1 ? 'visibility_off' : 'visibility'"
-            :rules="[() => !!password || 'This field is required']"
+            :rules="[() => !!password || 'This field is required', passwordCheck]"
             :type="show1 ? 'text' : 'password'"
             name="input-10-1"
             label="Password"
@@ -101,8 +101,8 @@ export default {
       city: null,
       formHasErrors: false,
       show1: false,
-      counter: value => value.length <= 20 || 'Max 20 characters',
-      min: v => v.length >= 8 || 'Min 8 characters',
+      counter: value => (value && value.length <= 20) || 'Max 20 characters',
+      min: v =>  (v && v.length >= 8) || 'Min 8 characters',
     }),
     computed: {
       form () {
@@ -122,7 +122,7 @@ export default {
     },
     methods: {
       passwordCheck(value){
-       return value => value.length >= 8 || 'Min 8 characters';
+       return (value && value.length >= 8) || 'Min 8 characters';
       },
       emailCheck(value) {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -145,17 +145,16 @@ export default {
         this.formHasErrors = false;
         console.log("form", this.form);
         Object.keys(this.form).forEach(f => {
-        if (!this.form[f]){
-        this.formHasErrors = true;
-        this.$refs[f].validate(true);
-        }else{
-         this.$store.commit('signUp', this.form);
-         this.$router.push({ name: 'Login'});
+          if (!this.form[f]) {
+            this.formHasErrors = true;
+            this.$refs[f].validate(true);
+          }
+        });
+        if (!this.formHasErrors) {
+          this.$store.commit('signUp', this.form);
+          this.$router.push({ name: 'Login'});
         }
-        
-        
-      });
-    },
+      },
   },
 };
 </script>

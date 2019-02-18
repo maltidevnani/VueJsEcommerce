@@ -9,6 +9,7 @@ export const store = new Vuex.Store({
     inCart: [],
     userInfo: {
     },
+    isLoggedIn: false,
     productsData: [
       {
         productImage: '/static/clothes.jpg',
@@ -16,7 +17,7 @@ export const store = new Vuex.Store({
         title: 'Clothes',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
         rating: 3,
-        rate: '$12.99',
+        rate: 12.99,
         quantity: 0,
         reviews: [
           {
@@ -45,7 +46,7 @@ export const store = new Vuex.Store({
         title: 'Earing',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
         rating: 4,
-        rate: '$10.99',
+        rate: 10.99,
         quantity: 0,
         reviews: [
           {
@@ -74,7 +75,7 @@ export const store = new Vuex.Store({
         title: 'Perfume',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
         rating: 5,
-        rate: '$15.99',
+        rate: 15.99,
         quantity: 0,
         reviews: [
           {
@@ -132,7 +133,7 @@ export const store = new Vuex.Store({
         title: 'Chocolate',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
         rating: 2,
-        rate: '$9.99',
+        rate: 9.99,
         quantity: 0,
         reviews: [
           {
@@ -161,7 +162,7 @@ export const store = new Vuex.Store({
         title: 'Shooes',
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
         rating: '3',
-        rate: '$24.99',
+        rate: 24.99,
         quantity: 0,
         reviews: [
           {
@@ -195,8 +196,9 @@ export const store = new Vuex.Store({
         if (data.id === el.id) {
           el.quantity = data.quantity;
           console.log("Product quantity is " + el.quantity);
-          state.inCart.push(data.id);
-          console.log("Product id is " + el.quantity);
+          if (state.inCart.indexOf(data.id) < 0) {
+            state.inCart.push(data.id);
+          }
         }
       });
     },
@@ -205,10 +207,19 @@ export const store = new Vuex.Store({
         if (data.id === el.id) {
           if (data.operation === 'add') {
             el.quantity += 1;
-          } else if (data.operation === 'remove' && el.quantity > 0) {
+            if (state.inCart.indexOf(data.id) < 0) {
+              state.inCart.push(data.id);
+            }
+          } else if (data.operation === 'remove' && el.quantity > 0) {            
             el.quantity -= 1;
+            if (state.inCart.indexOf(data.id) > -1 && el.quantity === 0) {
+              // remove that particular product whose quanity is 0
+              let index=state.inCart.indexOf(data.id);
+              state.inCart.splice(index,1);
+            }
           } else {
             el.quantity = 0;
+            
           }
           console.log(el.quantity);
         }

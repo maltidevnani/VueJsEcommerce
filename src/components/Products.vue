@@ -25,7 +25,7 @@
                 </v-btn>
                 <div>
                   <h4 class="subheadingClass">{{product.title}}</h4>
-                  <h3 class="subheadingClass">{{product.rate}}</h3>
+                  <h3 class="subheadingClass">$ {{product.rate}}</h3>
                    <v-rating class="justify-center" v-model="product.rating"></v-rating>
                    <h3 class="subheadingClass"
                    v-bind:id="product.quantity">{{product.quantity}}</h3>
@@ -98,6 +98,10 @@ export default {
 }
 .subheadingClass{
   text-align: left;
+}
+
+.v-btn--floating.v-btn--absolute, .v-btn--floating.v-btn--fixed {
+  z-index: 0;
 }
 
 </style>

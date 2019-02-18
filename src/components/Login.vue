@@ -69,7 +69,10 @@ export default {
         }
       });
       if (isFormValid) {
-        if (this.email === this.$store.state.userInfo.email && this.password === this.$store.state.userInfo.password) {
+        if (this.email === this.$store.state.userInfo.email && 
+        this.password === this.$store.state.userInfo.password) {
+          this.$store.state.isLoggedIn=true;
+          console.log("status of login"+ this.$store.state.isLoggedIn);
           this.$router.push({ name: 'Products'});
         }
       }

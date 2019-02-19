@@ -76,7 +76,7 @@ export default {
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 250px; /* Could be more or less, depending on screen size */
+  width: 350px; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */

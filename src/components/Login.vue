@@ -25,8 +25,16 @@
           ></v-text-field>
         </v-flex>
           <v-btn color="info" @click="submit">Login</v-btn>
-      </v-flex>
+      </v-flex> 
+      
     </v-layout>
+      <v-alert
+      v-model="alert"
+      :value="alert"
+      type="error"
+      transition="scale-transition">
+      Wrong email or password
+    </v-alert>    
   </v-container>
 </v-app>
 </template>
@@ -38,6 +46,7 @@ export default {
       email: null,
       password: null,
       show1: false,
+      alert: false,
       rules: {
         required: value => !!value || 'Required.',
         counter: value => value.length <= 20 || 'Max 20 characters',
@@ -69,11 +78,15 @@ export default {
         }
       });
       if (isFormValid) {
+        this.alert=false;
+        console.log(alert);
         if (this.email === this.$store.state.userInfo.email && 
         this.password === this.$store.state.userInfo.password) {
           this.$store.state.isLoggedIn=true;
           console.log("status of login"+ this.$store.state.isLoggedIn);
           this.$router.push({ name: 'Products'});
+        }else{
+          this.alert=true;
         }
       }
     },

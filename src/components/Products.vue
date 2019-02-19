@@ -19,16 +19,12 @@
                 </v-expand-transition>
               </v-img>
               <v-card-title primary-title class="pt-4" style="position: relative;">
-                <v-btn absolute color="pink" class="white--text" fab large right top>
-                  <v-icon>mdi-cart</v-icon>
-                  <h5>0</h5>
-                </v-btn>
                 <div>
-                  <h4 class="subheadingClass">{{product.title}}</h4>
-                  <h3 class="subheadingClass">$ {{product.rate}}</h3>
+                  <h3 class="subheadingClass">{{product.title}}</h3>
+                  <h4 class="subheadingClass">$ {{product.rate}}</h4>
                    <v-rating class="justify-center" v-model="product.rating"></v-rating>
-                   <h3 class="subheadingClass"
-                   v-bind:id="product.quantity">{{product.quantity}}</h3>
+                   <h4 class="subheadingClass"
+                   v-bind:id="product.quantity">Quantity: {{product.quantity}}</h4>
                 </div>
                 </v-card-title>
                 <v-card-actions class="justify-center">

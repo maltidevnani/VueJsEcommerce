@@ -1,14 +1,21 @@
 <template>
-    <v-app>
+  <v-app>
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <v-card class="mainContainer">
           <!-- <v-list two-line> -->
-          <div v-if="mode == 'add'">
-            <input v-model="name" placeholder="Your name">
-            <textarea v-model="review" placeholder="add a review"></textarea>
-            <v-btn color="success" @click="addReview()">Add</v-btn>
-          </div>
+          <v-container v-if="mode == 'add'">
+            <v-layout>
+              <v-flex xs12 sm6>
+                <input v-model="name" placeholder="Your name">
+                <textarea v-model="review" placeholder="add a review"></textarea>
+                <input type="file" @change="onFileChange">
+                <img :src="image" width="50px" height="50px">
+                <v-btn color="success" @click="addReview()">Add</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-container>
+
           <div v-for="product in $store.state.productsData" :key="product.id">
             <div v-if="proId == product.id">
               <v-card v-for="review in product.reviews" :key="review.rId">
@@ -33,17 +40,37 @@ export default {
     return {
       proId: this.$route.params.Pid,
       mode: this.$route.params.mode,
-      review: '',
-      name: '',
+      review: "",
+      name: "",
+      image: ""
     };
   },
   methods: {
     addReview() {
-      console.log(this.message + ' ' + this.name);
-      this.$store.commit('addReview', {id: this.proId, name: this.name, review: this.review});
+      console.log(this.message + " " + this.name);
+      this.$store.commit("addReview", {
+        id: this.proId,
+        name: this.name,
+        review: this.review
+      });
       this.$forceUpdate();
     },
-  },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = e => {
+        vm.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 };
 </script>
 <style>

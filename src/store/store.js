@@ -243,6 +243,7 @@ export const store = new Vuex.Store({
     signUp(state,data){
       console.log("use name is", data.name);      
       state.userInfo = data;
+      console.log("use data is", state.userInfo); 
     },    
   },
   getters: {

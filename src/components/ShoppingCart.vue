@@ -1,59 +1,64 @@
 <template>
-  <div>    
-    <v-badge ref="cartIcon" class="badgeMarginClass" >
-      <span slot="badge" >{{numInCart}}</span>
+  <div>
+    <v-badge ref="cartIcon" class="badgeMarginClass">
+      <span slot="badge">{{numInCart}}</span>
       <v-icon v-on:click="showCart">mdi-cart</v-icon>
     </v-badge>
     <div ref="cartModal" id="myModal" class="modal">
-
       <!-- Modal content -->
       <div class="modal-content">
         <span v-on:click="closeCart" class="close">&times;</span>
         <table class="table">
-            <tbody>
-              <tr>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Price</th>
-              </tr>
-              <tr v-for="item in cart" :key="item.id">
-                <td>{{ item.title }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.rate * item.quantity }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <tbody>
+            <tr>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+            <tr v-for="item in cart" :key="item.id">
+              <td>{{ item.title }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.rate * item.quantity }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+
+    <div></div>
   </div>
 </template>
 <script>
 export default {
-    computed: {
-      inCart() { return this.$store.getters.inCart; },
-      numInCart() { return this.inCart.length; },
-      cart() {
-        return this.$store.getters.inCart.map((cartItem) => {
-          return this.$store.getters.getProductData.find((forSaleItem) => {
-            return cartItem === forSaleItem.id;
-          });
-        });
-      },
+  computed: {
+    inCart() {
+      return this.$store.getters.inCart;
     },
-    methods: {
-      showCart: () => {
-        console.log('Showing cart', this);
-        document.getElementById("myModal").style.display = "block";
-      },
-      closeCart: () => {
-        console.log('Showing cart', this);
-        document.getElementById("myModal").style.display = "none";
-      }
+    numInCart() {
+      return this.inCart.length;
+    },
+    cart() {
+      return this.$store.getters.inCart.map(cartItem => {
+        return this.$store.getters.getProductData.find(forSaleItem => {
+          return cartItem === forSaleItem.id;
+        });
+      });
     }
-}
+  },
+  methods: {
+    showCart: () => {
+      console.log("Showing cart", this);
+      document.getElementById("myModal").style.display = "block";
+    },
+    closeCart: () => {
+      console.log("Showing cart", this);
+      document.getElementById("myModal").style.display = "none";
+    }
+  }
+};
 </script>
 <style>
-.badgeMarginClass{
+.badgeMarginClass {
   margin-top: 20px;
   margin-right: 10px;
 }
@@ -66,8 +71,8 @@ export default {
   top: 0;
   width: 100%; /* Full width */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
 /* Modal Content/Box */
@@ -94,12 +99,13 @@ export default {
   cursor: pointer;
 }
 
-td, th {
+td,
+th {
   color: black;
   text-align: center;
   width: auto;
   border: 1px solid grey;
-  padding: 5px 15px ;
+  padding: 5px 15px;
 }
 </style>
 

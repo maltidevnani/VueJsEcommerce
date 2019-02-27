@@ -5,12 +5,24 @@
         <v-card class="mainContainer">
           <!-- <v-list two-line> -->
           <v-container v-if="mode == 'add'">
-            <v-layout>
-              <v-flex xs12 sm6>
-                <input v-model="name" placeholder="Your name">
-                <textarea v-model="review" placeholder="add a review"></textarea>
+            <v-layout class="myLayoutClass">
+              <v-flex md3>
+                <v-card>
+                  <input v-model="name" placeholder="Your name">
+                </v-card>
+              </v-flex>
+              <v-flex md3>
+                <v-card>
+                  <textarea v-model="review" placeholder="add a review"></textarea>
+                </v-card>
+              </v-flex>
+              <v-flex md2>
                 <input type="file" @change="onFileChange">
+              </v-flex>
+              <v-flex md2>
                 <img :src="image" width="50px" height="50px">
+              </v-flex>
+              <v-flex md2>
                 <v-btn color="success" @click="addReview()">Add</v-btn>
               </v-flex>
             </v-layout>
@@ -76,5 +88,8 @@ export default {
 <style>
 .mainContainer {
   margin-top: 130px;
+}
+.myLayoutClass{
+  padding: 10px;
 }
 </style>

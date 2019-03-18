@@ -42,12 +42,20 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'products',
   data() {
     return {
       totalCountProduct: 0,
     };
+  },
+  mounted () {
+    axios
+      .post('https://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getProductList.php')
+      .then(response => (this.$store.state.productsData= response))
+      .catch(error => console.log(error));
+      console.log(this.$store.stateproductsData);
   },
   methods: {
     moveToProductDetail(id) {

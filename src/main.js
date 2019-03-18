@@ -7,11 +7,13 @@ import '@mdi/font/css/materialdesignicons.css';
 import App from './App';
 import router from './router';
 import { store } from './store/store';
+import axios from 'axios';
 
 Vue.use(Vuetify, {
   iconfont: 'mdi',
 });
 Vue.config.productionTip = false;
+Vue.prototype.$axios = axios;
 
 /* eslint-disable no-new */
 new Vue({

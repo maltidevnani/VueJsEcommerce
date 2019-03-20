@@ -26,7 +26,6 @@
           <v-list-tile-avatar>
             <img src="https://randomuser.me/api/portraits/men/85.jpg">
           </v-list-tile-avatar>
-
           <v-list-tile-content>
             <v-list-tile-title>{{userName}}</v-list-tile-title>
           </v-list-tile-content>
@@ -53,11 +52,9 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-
     <router-view></router-view>
   </v-app>
 </template>
-
 <script>
 import Product from "@/components/Products";
 import ShoppingCart from "@/components/ShoppingCart";
@@ -66,15 +63,26 @@ export default {
   data() {
     return {
       drawer: null,
-      userName: this.$store.state.userInfo.name,
       items: [
-        { title: "Home", icon: "dashboard" },
-        { title: "Logout", icon: "question_answer" }
+        { title: "Home", icon: "dashboard"},
+        { title: "Logout", icon: "question_answer"}
       ],
       mini: false,
       right: null
     };
   },
+  computed: {
+      form () {
+        return {
+          email: this.email,
+          password: this.password
+        }
+      },
+      userName () {
+      console.log("user name in app",this.$store.state.userInfo.name);
+      return this.$store.state.userInfo.name;
+    },
+    },
   components: {
     Product,
     ShoppingCart

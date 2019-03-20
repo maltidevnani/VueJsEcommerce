@@ -2,36 +2,36 @@
   <v-app>
     <v-container class="mainContainer" grid-list-md text-xs-center>
       <v-layout row wrap class="gridLayoutClass">
-        <v-flex v-for="product in $store.state.productsData" :key="product.id" xs4 sm6 md4>
+        <v-flex v-for="product in $store.state.productsData" :key="product.product_id" xs4 sm6 md4>
           <v-hover>
             <v-card
               slot-scope="{ hover }"
               class="mx-auto, mainCardClass"
               color="grey lighten-4"
               max-width="600">
-              <v-img :aspect-ratio="16/9" :src="product.productImage">
+              <v-img :aspect-ratio="16/9" :src="product.product_image">
                 <v-expand-transition>
                   <div
                     v-if="hover"
                     class="d-flex transition-fast-in-fast-out
                      black darken-3 v-card--reveal display-3 white--text"
-                    style="height: 100%;">{{product.rate}}</div>
+                    style="height: 100%;">{{product.product_price}}</div>
                 </v-expand-transition>
               </v-img>
               <v-card-title primary-title class="pt-4" style="position: relative;">
                 <div>
-                  <h3 class="subheadingClass">{{product.title}}</h3>
-                  <h4 class="subheadingClass">$ {{product.rate}}</h4>
-                   <v-rating class="justify-center" v-model="product.rating"></v-rating>
+                  <h3 class="subheadingClass">{{product.product_title}}</h3>
+                  <h4 class="subheadingClass">$ {{product.product_price}}</h4>
+                   <v-rating class="justify-center" v-model="product.product_rating"></v-rating>
                    <h4 class="subheadingClass"
                    v-bind:id="product.quantity">Quantity: {{product.quantity}}</h4>
                 </div>
                 </v-card-title>
                 <v-card-actions class="justify-center">
-                <v-btn dark color="blue" v-bind:id="product.id"
+                <v-btn dark color="blue" v-bind:id="product.product_id"
                 @click="addProduct(product)">Add To Cart</v-btn>
-                <v-btn dark color="blue" v-bind:id="product.id"
-                 @click="moveToProductDetail(product.id)">View Detail</v-btn>
+                <v-btn dark color="blue" v-bind:id="product.product_id"
+                 @click="moveToProductDetail(product.product_id)">View Detail</v-btn>
               </v-card-actions>
             </v-card>
           </v-hover>
@@ -52,10 +52,13 @@ export default {
   },
   mounted () {
     axios
-      .post('https://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getProductList.php')
-      .then(response => (this.$store.state.productsData= response))
+      .post('http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getProductList.php')
+      .then((response) =>{
+        console.log(response);  
+        this.$store.state.productsData = response.data.products;
+        console.log("productData is",this.$store.state.productsData)
+      })
       .catch(error => console.log(error));
-      console.log(this.$store.stateproductsData);
   },
   methods: {
     moveToProductDetail(id) {

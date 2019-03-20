@@ -2,31 +2,30 @@
     <v-app>
     <v-layout row child-flex justify-center align-center wrap >
     <v-flex md6>
-        <div class="myCardClass"
-      v-for="product in $store.state.productsData" :key="product.id">
-       <v-card v-if="proId == product.id">
-        <v-img :src="product.productImage"  aspect-ratio="2.50"></v-img>
+        <div class="myCardClass">
+       <v-card >
+        <v-img :src="this.$store.state.productInfo.product_image"  aspect-ratio="2.50"></v-img>
         <v-card-title>
           <div class="divContentClass">
-            <h4 class="subheadingClass">{{product.title}}</h4>
-            <h3 class="subheadingClass">{{product.productDetail}}</h3>
-            <h3 class="subheadingClass">$ {{product.rate}}</h3>
-            <v-rating class="justify-center" v-model="product.rating"></v-rating>
+            <h4 class="subheadingClass">{{this.$store.state.productInfo.product_title}}</h4>
+            <h3 class="subheadingClass">{{this.$store.state.productInfo.product_description}}</h3>
+            <h3 class="subheadingClass">$ {{this.$store.state.productInfo.product_price}}</h3>
+            <v-rating class="justify-center" v-model="this.$store.state.productInfo.product_rating"></v-rating>
              <v-card-actions class="justify-center">
             <v-btn  color="blue" class="white--text"
-            @click="goToReviews(product.id, 'add')">Add Review</v-btn>
+            @click="goToReviews(productId, 'add')">Add Review</v-btn>
             <v-btn  color="blue" class="white--text"
-              @click="goToReviews(product.id, 'view')">View Reviews</v-btn>
+              @click="goToReviews(productId, 'view')">View Reviews</v-btn>
             </v-card-actions>
           </div>
         </v-card-title>
         <v-card-actions class="justify-center">
             <v-btn  color="blue" class="white--text"
-            @click="addOrRemoveProduct(product.id, 'add')">Add</v-btn>
+            @click="addOrRemoveProduct(productId, 'add')">Add</v-btn>
             <v-btn  color="white" class="grey--text,subheadingClass"
-            v-model="product.quantity">{{product.quantity | convertToNum }}</v-btn>
+            ></v-btn>
             <v-btn color="blue" class="white--text"
-             @click="addOrRemoveProduct(product.id, 'remove')">Remove</v-btn>
+             @click="addOrRemoveProduct(productId, 'remove')">Remove</v-btn>
         </v-card-actions>
       </v-card>
       </div>
@@ -35,12 +34,33 @@
 </v-app>
 </template>
 <script>
+import axios from 'axios';
 export default {
      name: 'productDetail',
   data() {
     return {
         proId: this.$route.params.Pid,
     };
+  },
+   computed: {
+      productId () {
+      console.log("product id in product detail",this.$store.state.productInfo.product_id);
+      return this.$store.state.productInfo.product_id;
+    },
+    },
+  mounted () {
+    console.log(this.proId);
+   var params = new URLSearchParams();
+   params.append('productId', this.proId);  
+    axios
+      .post('http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getProductDetail.php',
+      params)      
+      .then((response) =>{
+        console.log(response);  
+        this.$store.state.productInfo = response.data;
+        console.log("productDetail is",this.$store.state.productInfo);
+      })
+      .catch(error => console.log(error));
   },
   methods: {
     addOrRemoveProduct(id, operation) {

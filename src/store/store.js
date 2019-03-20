@@ -8,11 +8,12 @@ export const store = new Vuex.Store({
     totalProductCount: 0,
     inCart: [],
     userInfo: {
+      name: '',
     },
     isLoggedIn: false,
-    productsData: [
-      
+    productsData: [     
     ],
+    productInfo:{},
   },
   mutations: {
     productsData(state, productsData) {
@@ -68,9 +69,9 @@ export const store = new Vuex.Store({
       });
     },
     signUp(state,data){
-      console.log("use name is", data.name);      
-      state.userInfo = data;
-      console.log("use data is", state.userInfo); 
+      console.log("use name is", data.name);    
+      state.userInfo = data;  
+      console.log("use data", state.userInfo);    
     },    
   },
   getters: {

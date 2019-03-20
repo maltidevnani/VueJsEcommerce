@@ -3,7 +3,7 @@
   <v-container >
     <v-layout wrap justify-center align-center>
       <v-flex md6 row >
-        <h1 class="login_title">Login Page</h1>
+        <h1 class="login_title">Login</h1>
            <v-text-field
             v-model="email"
             ref="email"
@@ -39,6 +39,7 @@
 </v-app>
 </template>
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -80,16 +81,28 @@ export default {
       if (isFormValid) {
         this.alert=false;
         console.log(alert);
-        if (this.email === this.$store.state.userInfo.email && 
-        this.password === this.$store.state.userInfo.password) {
-          this.$store.state.isLoggedIn=true;
-          console.log("status of login"+ this.$store.state.isLoggedIn);
-          this.$router.push({ name: 'Products'});
-        }else{
-          this.alert=true;
-        }
+        this.doLogin();
       }
     },
+    doLogin(){
+      var params = new URLSearchParams();
+      params.append('email', this.form.email);
+      params.append('password', this.form.password);
+      axios
+        .post(
+          "http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getUserDetail.php",
+          params
+        )
+        .then(response => {
+          console.log(response);
+           this.$store.commit("signUp",response.data);
+           this.$store.state.isLoggedIn=true;
+           this.$router.push({ name: 'Products'});
+        })
+        .catch(error => console.log(error));
+        this.alert=true;
+
+    }
   }
 };
 </script>

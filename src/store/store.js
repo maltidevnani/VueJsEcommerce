@@ -13,6 +13,17 @@ export const store = new Vuex.Store({
     isLoggedIn: false,
     productsData: [     
     ],
+    productQuantityArray: [
+      {
+       proQuanity1:0,
+       proQuantity2:0,
+       proQuanity3:3,
+       proQuanity4:0,
+       proQuanity5:5,
+       proQuanity6:0,
+
+      },
+    ],
     productInfo:{},
   },
   mutations: {

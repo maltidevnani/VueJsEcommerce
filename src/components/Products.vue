@@ -24,7 +24,8 @@
                   <h4 class="subheadingClass">$ {{product.product_price}}</h4>
                    <v-rating class="justify-center" v-model="product.product_rating"></v-rating>
                    <h4 class="subheadingClass"
-                   v-bind:id="product.quantity">Quantity: {{product.quantity}}</h4>
+                   v-bind:id="$store.state.productQuantityArray[product.product_id]">
+                   Quantity: {{$store.state.productQuantityArray[product.product_id]}}</h4>
                 </div>
                 </v-card-title>
                 <v-card-actions class="justify-center">
@@ -48,6 +49,8 @@ export default {
   data() {
     return {
       totalCountProduct: 0,
+      productQuantiy:0,
+      
     };
   },
   mounted () {

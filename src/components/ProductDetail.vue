@@ -44,12 +44,10 @@ export default {
   },
    computed: {
       productId () {
-      console.log("product id in product detail",this.$store.state.productInfo.product_id);
       return this.$store.state.productInfo.product_id;
     },
-    },
+  },
   mounted () {
-    console.log(this.proId);
    var params = new URLSearchParams();
    params.append('productId', this.proId);  
     axios

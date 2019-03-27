@@ -17,24 +17,21 @@
                 </v-card>
               </v-flex>
               <v-flex md3>
-                <img :src="image" width="50px" height="50px">
-                <input type="file" @change="onFileChange">
+                <img :src="imageData" width="50px" height="50px">
+                <input type="file" ref="file" @change="onFileChange" accept="image/*">
               </v-flex>
               <v-flex md3>
-                <v-btn color="success" @click="addReview()">Add</v-btn>
-              </v-flex>
+                <v-btn color="success" @click="submitFile()">Add</v-btn>
+              </v-flex>              
             </v-layout>
+            <v-alert :value="isReviewAddedSuccessfully" v-model="isReviewAddedSuccessfully" type="success">Review Added Successfully</v-alert>
           </v-container>
           <v-container v-else v-for="review in this.reviewList" :key="review.review_id">
             <v-flex xs12>
               <v-card color="cyan darken-2" class="white--text">
                 <v-layout>
                   <v-flex xs5>
-                    <v-img
-                     :src="review.review_image"
-                      height="125px"
-                      contain
-                    ></v-img>
+                    <v-img :src="review.review_image" height="125px" contain></v-img>
                   </v-flex>
                   <v-flex xs7>
                     <v-card-title primary-title>
@@ -64,8 +61,9 @@ export default {
       reviewList: [],
       review: "",
       name: "",
-      image: "",
-      file: ""
+      imageData: "",
+      file: "",
+      isReviewAddedSuccessfully: false,
     };
   },
   mounted() {
@@ -86,7 +84,6 @@ export default {
   },
   methods: {
     addReview() {
-      console.log(this.message + " " + this.name);
       this.$store.commit("addReview", {
         id: this.proId,
         name: this.name,
@@ -106,7 +103,7 @@ export default {
       var vm = this;
 
       reader.onload = e => {
-        vm.image = e.target.result;
+        vm.imageData = e.target.result;
       };
       reader.readAsDataURL(file);
     },
@@ -128,11 +125,14 @@ export default {
           }
         )
         .then(function() {
+         this.isReviewAddedSuccessfully=true;
           console.log("SUCCESS!!");
         })
         .catch(function() {
+         // this.isReviewAddedSuccessfully=false;
           console.log("FAILURE!!");
         });
+        
     }
   }
 };

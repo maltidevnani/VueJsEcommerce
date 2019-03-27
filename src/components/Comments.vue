@@ -26,18 +26,27 @@
             </v-layout>
           </v-container>
           <v-container v-else v-for="review in this.reviewList" :key="review.review_id">
-            <v-card>
-              <v-card-title>
-                <h3 class="headline mb-0">{{review.reviewer_name}}</h3>
-              </v-card-title>
-              <v-card-title>
-                <h4>{{review.review_comment}}</h4>
-              </v-card-title>
-               <v-card-title>
-                <v-img :aspect-ratio="16/9" :src="review.review_image"></v-img>
-               
-              </v-card-title>
-            </v-card>
+            <v-flex xs12>
+              <v-card color="cyan darken-2" class="white--text">
+                <v-layout>
+                  <v-flex xs5>
+                    <v-img
+                     :src="review.review_image"
+                      height="125px"
+                      contain
+                    ></v-img>
+                  </v-flex>
+                  <v-flex xs7>
+                    <v-card-title primary-title>
+                      <div>
+                        <div class="headline">{{review.reviewer_name}}</div>
+                        <div>{{review.review_comment}}</div>
+                      </div>
+                    </v-card-title>
+                  </v-flex>
+                </v-layout>
+              </v-card>
+            </v-flex>
           </v-container>
         </v-card>
       </v-flex>
@@ -104,17 +113,20 @@ export default {
     submitFile() {
       let formData = new FormData();
       formData.append("image", this.file);
-      formData.append("name",this.name);
-      formData.append("comment",this.review);
-      formData.append("productId",this.proId);
-      console.log("form data is",formData);
+      formData.append("name", this.name);
+      formData.append("comment", this.review);
+      formData.append("productId", this.proId);
+      console.log("form data is", formData);
       axios
-        .post("http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/addReview.php",
-         formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
+        .post(
+          "http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/addReview.php",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
           }
-        })
+        )
         .then(function() {
           console.log("SUCCESS!!");
         })

@@ -1,68 +1,119 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
+import config from '../config.js';
 
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    totalProductCount: 0,
     inCart: [],
     userInfo: {
       name: '',
     },
-    isLoggedIn: false,
-    productsData: [     
-    ],
-    productQuantityArray: [
-      {
-       proQuanity1:0,
-       proQuantity2:0,
-       proQuanity3:3,
-       proQuanity4:0,
-       proQuanity5:5,
-       proQuanity6:0,
-
-      },
-    ],
+    isLoggedin: false,
+    productsData: [],
     productInfo:{},
   },
+  actions: {
+    setLoggedin({commit}, loggedIn) {
+      if (typeof loggedIn === "string") {
+        if (loggedIn == "true") {
+          loggedIn = true;
+        } else {
+          loggedIn = false;
+        }
+      }
+      commit('setLoginStatus', {loggedIn: loggedIn});
+    },
+    fetchProductsData({commit}) {
+      axios
+      .post(config.apiUrlProducts)
+      .then((response) => {
+        commit('setProductsData', response.data.products);
+      })
+      .catch(error => console.log(error));
+    },
+    fetchProductDetails({commit}, pid) {
+      var params = new URLSearchParams();
+      params.append('productId', pid);  
+      axios
+        .post(config.apiUrlProductDetail, params)      
+        .then((response) => {
+          commit('setProductInfo', response.data);
+        })
+        .catch(error => console.log(error));
+    },
+    updateQuantity({dispatch, commit}, data) {
+      var userId = this.state.userInfo.id;
+      var productId= data.id;
+      var newQuantity = data.newQuantity;
+      console.log('updateQ', userId, productId, newQuantity);
+      let params = new URLSearchParams();
+      params.append('userId', userId);
+      params.append('productId', productId);
+      params.append('quantity', newQuantity);
+      axios
+        .post(config.apiUrlUpdateQuantity, params)
+        .then((response) =>{
+          console.log('Quantity update success', response);
+          dispatch('fetchCartItems');
+        })
+        .catch(error => console.log(error));
+    },
+    addToCart({dispatch, commit}, prodId) {
+      var userId = this.state.userInfo.id;
+      var productId= prodId;
+      console.log('updateQ', userId, productId);
+      let params = new URLSearchParams();
+      params.append('userId', userId);
+      params.append('productId', productId);
+      params.append('quantity', 1);
+      axios
+        .post(config.apiUrlAddCart, params)
+        .then((response) =>{
+          console.log('Product add success', response);
+          dispatch('fetchCartItems');
+        })
+        .catch(error => console.log(error));
+    },
+    fetchCartItems({commit}) {
+      var userId = this.state.userInfo.id;
+      var params = new URLSearchParams();
+      params.append('userId', userId);
+      axios
+      .post(config.apiUrlGetCartProducts, params)
+      .then((response) =>{
+        console.log('GetCartProducts',response);  
+        commit('setCartItems', response.data.products);
+      })
+      .catch(error => console.log(error));
+    },
+    removeProduct({dispatch, commit}, prodId) {
+      var userId = this.state.userInfo.id;
+      var params = new URLSearchParams();
+      params.append('userId', userId);
+      params.append('productId', prodId);
+      axios
+      .post(config.apiUrlRemoveProduct, params)
+      .then((response) =>{
+        dispatch('fetchCartItems');
+      })
+      .catch(error => console.log(error));
+    },
+  },
   mutations: {
-    productsData(state, productsData) {
+    setProductsData(state, productsData) {
       state.productsData = productsData;
     },
-    addToCart(state, data) {
-      state.productsData.forEach((el) => {
-        if (data.id === el.id) {
-          el.quantity = data.quantity;
-          console.log("Product quantity is " + el.quantity);
-          if (state.inCart.indexOf(data.id) < 0) {
-            state.inCart.push(data.id);
-          }
-        }
-      });
+    setLoginStatus(state, data) {
+            state.isLoggedin = data.loggedIn;
     },
-    addOrRemoveProduct(state, data) {
-      state.productsData.forEach((el) => {
-        if (data.id === el.id) {
-          if (data.operation === 'add') {
-            el.quantity += 1;
-            if (state.inCart.indexOf(data.id) < 0) {
-              state.inCart.push(data.id);
-            }
-          } else if (data.operation === 'remove' && el.quantity > 0) {            
-            el.quantity -= 1;
-            if (state.inCart.indexOf(data.id) > -1 && el.quantity === 0) {
-              // remove that particular product whose quanity is 0
-              let index=state.inCart.indexOf(data.id);
-              state.inCart.splice(index,1);
-            }
-          } else {
-            el.quantity = 0;
-            
-          }
-          console.log(el.quantity);
-        }
-      });
+    setProductInfo(state, product) {
+         state.productInfo = product;
+    },
+    setCartItems(state, products) {
+      state.inCart = products;
     },
     addReview(state, data) {
       console.log('add review', data);
@@ -79,19 +130,36 @@ export const store = new Vuex.Store({
         }
       });
     },
-    signUp(state,data){
-      console.log("use name is", data.name);    
+    signUp(state,data){  
       state.userInfo = data;  
-      console.log("use data", state.userInfo);    
     },    
   },
   getters: {
-    inCart: state => state.inCart,
+    inCart: (state) => {
+          return state.inCart;
+        },
     getProductData(state) {
       return state.productsData;
     },
+    getQuantity: (state) => (id) => {
+        for (let index = 0; index < state.inCart.length; index++) {
+          if (state.inCart[index].product_id == id) {
+            return state.inCart[index].quantity;
+          }
+        }
+        return 0;
+      },
+    getProductInfo(state) {
+        return state.productInfo;
+    },
     getProductById(state, id) {
       return state.products.find(product => product.id === id);
+    },
+    getLoginStatus(state) {
+        return state.isLoggedin;
+      },
+    getUser(state) {
+      return state.userInfo;
     },
   },
 });

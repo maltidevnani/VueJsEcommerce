@@ -83,6 +83,7 @@
 </template>
 <script>
 import axios from 'axios';
+import config from '../config';
 export default {
   data: () => ({
     errorMessages: "",
@@ -156,7 +157,7 @@ export default {
       params.append('city', this.form.city);
       axios
         .post(
-          "http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/insertUser.php",
+          config.apiUrlSignup,
           params
         )
         .then(response => {

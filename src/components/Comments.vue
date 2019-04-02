@@ -5,25 +5,21 @@
         <v-card class="mainContainer">
           <!-- <v-list two-line> -->
           <v-container v-if="mode == 'add'">
-            <v-layout class="myLayoutClass">
-              <v-flex md3>
-                <v-card class="myReviewCardClass">
-                  <input class="myReviewCardClass" v-model="name" placeholder="Your name">
-                </v-card>
-              </v-flex>
-              <v-flex md3>
-                <v-card class="myReviewCardClass">
-                  <textarea class="myReviewCardClass" v-model="review" placeholder="add a review"></textarea>
-                </v-card>
-              </v-flex>
-              <v-flex md3>
-                <img :src="imageData" width="50px" height="50px">
-                <input type="file" ref="file" @change="onFileChange" accept="image/*">
-              </v-flex>
-              <v-flex md3>
-                <v-btn color="success" @click="submitFile()">Add</v-btn>
-              </v-flex>              
-            </v-layout>
+            <v-text-field
+              v-model="name"
+              label="Name"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="review"
+              label="Review"
+              required
+            ></v-text-field>
+            <v-flex>
+                <img v-if="imageData" :src="imageData" width="50px" height="50px" alt="No Image">
+            </v-flex>
+            <input type="file" ref="file" @change="onFileChange" accept="image/*"> 
+            <v-btn block color="success" dark @click="submitFile()">Add Review</v-btn>           
             <v-alert :value="isReviewAddedSuccessfully" v-model="isReviewAddedSuccessfully" type="success">Review Added Successfully</v-alert>
           </v-container>
           <v-container v-else v-for="review in this.reviewList" :key="review.review_id">
@@ -52,6 +48,7 @@
 </template>
 <script>
 import axios from "axios";
+import config from '../config';
 export default {
   name: "commentPage",
   data() {
@@ -72,7 +69,7 @@ export default {
     console.log(this.proId);
     axios
       .post(
-        "http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getReviewList.php",
+        config.apiUrlReviews,
         params
       )
       .then(response => {
@@ -108,6 +105,9 @@ export default {
       reader.readAsDataURL(file);
     },
     submitFile() {
+      if (!this.file || !this.name || !this.review || !this.proId) {
+        return;
+      }
       let formData = new FormData();
       formData.append("image", this.file);
       formData.append("name", this.name);
@@ -116,7 +116,7 @@ export default {
       console.log("form data is", formData);
       axios
         .post(
-          "http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/addReview.php",
+          config.apiUrlAddReview,
           formData,
           {
             headers: {

@@ -2,7 +2,7 @@
   <v-app>
     <v-container class="mainContainer" grid-list-md text-xs-center>
       <v-layout row wrap class="gridLayoutClass">
-        <v-flex v-for="product in $store.state.productsData" :key="product.product_id" xs4 sm6 md4>
+        <v-flex v-for="product in getProductData" :key="product.product_id" xs4 sm6 md4>
           <v-hover>
             <v-card
               slot-scope="{ hover }"
@@ -23,16 +23,17 @@
                   <h3 class="subheadingClass">{{product.product_title}}</h3>
                   <h4 class="subheadingClass">$ {{product.product_price}}</h4>
                    <v-rating class="justify-center" v-model="product.product_rating"></v-rating>
-                   <h4 class="subheadingClass"
-                   v-bind:id="$store.state.productQuantityArray[product.product_id]">
-                   Quantity: {{$store.state.productQuantityArray[product.product_id]}}</h4>
+                   <h4 class="subheadingClass">
+                   Quantity: {{getQuantity(product.product_id)}}</h4>
                 </div>
                 </v-card-title>
                 <v-card-actions class="justify-center">
+                  <v-btn dark color="blue" v-bind:id="product.product_id" v-if="getQuantity(product.product_id) == 0"
+                  @click="addToCart(product.product_id)">Add To Cart</v-btn>
+                  <v-btn dark color="red" v-bind:id="product.product_id" v-if="getQuantity(product.product_id) != 0"
+                  @click="removeProduct(product.product_id)" >Remove From Cart</v-btn>
                 <v-btn dark color="blue" v-bind:id="product.product_id"
-                @click="addProduct(product)">Add To Cart</v-btn>
-                <v-btn dark color="blue" v-bind:id="product.product_id"
-                 @click="moveToProductDetail(product.product_id)">View Detail</v-btn>
+                 @click="moveToProductDetail(product.product_id, getQuantity(product.product_id))">View Detail</v-btn>
               </v-card-actions>
             </v-card>
           </v-hover>
@@ -44,6 +45,8 @@
 
 <script>
 import axios from 'axios';
+import config from '../config.js';
+import {mapGetters, mapActions} from 'vuex';
 export default {
   name: 'products',
   data() {
@@ -53,31 +56,18 @@ export default {
       
     };
   },
-  mounted () {
-    axios
-      .post('http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getProductList.php')
-      .then((response) =>{
-        console.log(response);  
-        this.$store.state.productsData = response.data.products;
-        console.log("productData is",this.$store.state.productsData)
-      })
-      .catch(error => console.log(error));
+  computed: {
+    ...mapGetters(['getQuantity', 'getProductData']),
   },
-  methods: {
-    moveToProductDetail(id) {
-      console.log(id);
-      this.$router.push({ name: 'productDetail', params: { Pid: id } });
-    },
-    addProduct(prod) {
-      console.log(prod);
-         const data = {
-          id: prod.id,
-          quantity: prod.quantity + 1,
-        };
-      console.log(data);
-      this.$store.commit('addToCart', data);
-    },
-  },
+  created () {
+    this.fetchProductsData();
+    this.fetchCartItems();
+   },
+  methods: { ...mapActions(['fetchProductsData', 'addToCart', 'fetchCartItems', 'removeProduct']),
+    moveToProductDetail(id, quantity) {
+      this.$router.push({ name: 'productDetail', params: { Pid: id, quantity: quantity } });
+     },
+  }
 };
 </script>
 <style>

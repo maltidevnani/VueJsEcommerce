@@ -4,28 +4,29 @@
     <v-flex md6>
         <div class="myCardClass">
        <v-card >
-        <v-img :src="this.$store.state.productInfo.product_image"  aspect-ratio="2.50"></v-img>
+        <v-img :src="getProductInfo.product_image"  aspect-ratio="2.50"></v-img>
         <v-card-title>
           <div class="divContentClass">
-            <h4 class="subheadingClass">{{this.$store.state.productInfo.product_title}}</h4>
-            <h3 class="subheadingClass">{{this.$store.state.productInfo.product_description}}</h3>
-            <h3 class="subheadingClass">$ {{this.$store.state.productInfo.product_price}}</h3>
-            <v-rating class="justify-center" v-model="this.$store.state.productInfo.product_rating"></v-rating>
+            <h4 class="subheadingClass">{{getProductInfo.product_title}}</h4>
+            <h3 class="subheadingClass">{{getProductInfo.product_description}}</h3>
+            <h3 class="subheadingClass">$ {{getProductInfo.product_price}}</h3>
+            <v-rating class="justify-center" v-model="getProductInfo.product_rating"></v-rating>
              <v-card-actions class="justify-center">
             <v-btn  color="blue" class="white--text"
-            @click="goToReviews(productId, 'add')">Add Review</v-btn>
+            @click="goToReviews(getProductInfo.product_id, 'add')">Add Review</v-btn>
             <v-btn  color="blue" class="white--text"
-              @click="goToReviews(productId, 'view')">View Reviews</v-btn>
+             @click="goToReviews(getProductInfo.product_id, 'view')">View Reviews</v-btn>
             </v-card-actions>
           </div>
         </v-card-title>
         <v-card-actions class="justify-center">
             <v-btn  color="blue" class="white--text"
-            @click="addOrRemoveProduct(productId, 'add')">Add</v-btn>
-            <v-btn  color="white" class="grey--text,subheadingClass"
-            ></v-btn>
+            @click="addOrRemoveProduct(proId, 'add')">Add</v-btn>
+            <v-btn  color="white" class="grey--text,subheadingClass">
+              {{ quantity| convertToNum }}
+            </v-btn>
             <v-btn color="blue" class="white--text"
-             @click="addOrRemoveProduct(productId, 'remove')">Remove</v-btn>
+             @click="addOrRemoveProduct(proId, 'remove')">Remove</v-btn>
         </v-card-actions>
       </v-card>
       </div>
@@ -35,34 +36,45 @@
 </template>
 <script>
 import axios from 'axios';
+import config from '../config';
+import {mapGetters, mapActions} from 'vuex';
 export default {
      name: 'productDetail',
   data() {
     return {
         proId: this.$route.params.Pid,
+        quantity: this.$route.params.quantity
     };
   },
    computed: {
-      productId () {
-      return this.$store.state.productInfo.product_id;
-    },
-  },
-  mounted () {
-   var params = new URLSearchParams();
-   params.append('productId', this.proId);  
-    axios
-      .post('http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getProductDetail.php',
-      params)      
-      .then((response) =>{
-        console.log(response);  
-        this.$store.state.productInfo = response.data;
-        console.log("productDetail is",this.$store.state.productInfo);
-      })
-      .catch(error => console.log(error));
-  },
+    ...mapGetters(['getQuantity', 'getProductInfo']),
+   },
+   created() {
+    this.fetchProductDetails(this.proId);
+   },
   methods: {
+    ...mapActions(['fetchProductDetails', 'updateQuantity', 'fetchCartItems', 'addToCart', 'removeProduct']),
     addOrRemoveProduct(id, operation) {
-      this.$store.commit('addOrRemoveProduct', {id: id, operation: operation});
+      if (operation == 'add') {
+        if (this.quantity == 0) {
+          this.quantity = parseInt(this.quantity) + 1;
+          this.addToCart(id, this.quantity);
+          return;
+        }
+        this.quantity = parseInt(this.quantity) + 1;
+      }
+     else {
+        if (this.quantity == 0) {
+          return;
+        }
+        else if (this.quantity == 1) {
+          this.quantity =  0;
+          this.removeProduct(id);
+          return;
+        }
+        this.quantity =  parseInt(this.quantity) - 1;
+      }
+      this.updateQuantity({id: id, operation: operation, newQuantity: this.quantity});
     },
     goToReviews(id, mode) {
       console.log(id);
@@ -82,15 +94,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .subheadingClass{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 25px;
+  font-size: 17px;
   font-weight: bold;
   text-align: center;
 }
 .myCardClass{
-    margin-top: 100px;
+    margin-top: 75px;
 }
 .divContentClass{
     margin: auto;

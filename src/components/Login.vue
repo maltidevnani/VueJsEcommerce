@@ -40,12 +40,14 @@
 </template>
 <script>
 import axios from 'axios';
+import config from '../config.js';
+import {mapGetters, mapActions} from 'vuex';
 export default {
   data() {
     return {
       title: 'Preliminary report',
-      email: null,
-      password: null,
+      email: '',
+      password: '',
       show1: false,
       alert: false,
       rules: {
@@ -61,6 +63,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['getUser']),
       form () {
         return {
           email: this.email,
@@ -69,6 +72,7 @@ export default {
       }
     },
   methods: {
+    ...mapActions(['setLoggedin', 'fetchCartItems']),
     submit () {
       console.log("form", this.form);
       let isFormValid = true;
@@ -90,17 +94,23 @@ export default {
       params.append('password', this.form.password);
       axios
         .post(
-          "http://localhost:5566/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getUserDetail.php",
+          config.apiUrlLogin,
           params
         )
         .then(response => {
           console.log(response);
            this.$store.commit("signUp",response.data);
-           this.$store.state.isLoggedIn=true;
            this.$router.push({ name: 'Products'});
+           this.fetchCartItems();
+           localStorage.setItem('isLoggedin', "true");
+           var user = this.getUser;
+           localStorage.setItem('user', JSON.stringify(user));
+           this.setLoggedin(true);
         })
-        .catch(error => console.log(error));
-        this.alert=true;
+        .catch(error => {
+          console.log(error);
+          this.alert=true;
+        });
     }
   }
 };

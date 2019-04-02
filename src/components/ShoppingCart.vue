@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-badge ref="cartIcon" class="badgeMarginClass">
-      <span slot="badge">{{numInCart}}</span>
+    <v-badge ref="cartIcon" class="badgeMarginClass" v-if="getLoginStatus">
+      <span slot="badge">{{inCart.length}}</span>
       <v-icon v-on:click="showCart">mdi-cart</v-icon>
     </v-badge>
     <div ref="cartModal" id="myModal" class="modal">
@@ -15,10 +15,10 @@
               <th>Quantity</th>
               <th>Price</th>
             </tr>
-            <tr v-for="item in cart" :key="item.id">
-              <td>{{ item.title }}</td>
+            <tr v-for="item in inCart" :key="item.product_id">
+              <td>{{ item.product_title }}</td>
               <td>{{ item.quantity }}</td>
-              <td>{{ item.rate * item.quantity }}</td>
+              <td>{{ item.product_price * item.quantity }}</td>
             </tr>
           </tbody>
         </table>
@@ -29,21 +29,10 @@
   </div>
 </template>
 <script>
+import {mapGetters} from 'vuex';
 export default {
   computed: {
-    inCart() {
-      return this.$store.getters.inCart;
-    },
-    numInCart() {
-      return this.inCart.length;
-    },
-    cart() {
-      return this.$store.getters.inCart.map(cartItem => {
-        return this.$store.getters.getProductData.find(forSaleItem => {
-          return cartItem === forSaleItem.id;
-        });
-      });
-    }
+    ...mapGetters(['inCart', 'getLoginStatus']),
   },
   methods: {
     showCart: () => {

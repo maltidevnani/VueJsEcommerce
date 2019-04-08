@@ -1,47 +1,74 @@
 <template>
   <div>
-    <v-badge ref="cartIcon" class="badgeMarginClass" v-if="getLoginStatus">
+    <v-badge ref="cartIcon" class="badgeMarginClass">
       <span slot="badge">{{inCart.length}}</span>
-      <v-icon v-on:click="showCart">mdi-cart</v-icon>
+      <v-icon @click.stop="dialog = true">mdi-cart</v-icon>
     </v-badge>
-    <div ref="cartModal" id="myModal" class="modal">
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span v-on:click="closeCart" class="close">&times;</span>
-        <table class="table">
-          <tbody>
-            <tr>
-              <th>Item</th>
-              <th>Quantity</th>
-              <th>Price</th>
-            </tr>
-            <tr v-for="item in inCart" :key="item.product_id">
-              <td>{{ item.product_title }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.product_price * item.quantity }}</td>
-            </tr>
-          </tbody>
+    <v-dialog v-model="dialog" persistent max-width="430">
+      <v-card>
+        <table
+          v-for="item in inCart" :key="item.product_id"
+          class="elevation-1"
+          hide-actions
+          hide-headers
+        >
+          <template>
+            <v-btn color="error" small @click="removeProduct(item.product_id)">Remove</v-btn>
+            <td class="text-xs-right" style="width:100px !important;" >{{ item.product_title }}</td>
+            <v-btn fab dark small color="primary" @click="addOrRemoveProduct(item.product_id, 'remove', item.quantity)">
+              <v-icon dark>remove</v-icon>
+            </v-btn>
+            <td style="width:30px;" class="text-xs-right">{{ item.quantity }}</td>
+            <v-btn fab dark small color="primary" @click="addOrRemoveProduct(item.product_id, 'add', item.quantity)">
+              <v-icon dark>add</v-icon>
+            </v-btn>
+            <td class="text-xs-right">{{ item.quantity * item.product_price }} $</td>
+          </template>
         </table>
-      </div>
-    </div>
-
-    <div></div>
+        <v-btn block  color="primary" @click="dialog = false">
+          Checkout
+        </v-btn>
+        <v-btn block  dark  color="pink" @click="dialog = false">
+          Continue Shopping
+        </v-btn>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 export default {
+  data () {
+    return {
+      dialog: false
+    }
+  },
   computed: {
     ...mapGetters(['inCart', 'getLoginStatus']),
   },
   methods: {
-    showCart: () => {
-      console.log("Showing cart", this);
-      document.getElementById("myModal").style.display = "block";
-    },
-    closeCart: () => {
-      console.log("Showing cart", this);
-      document.getElementById("myModal").style.display = "none";
+    ...mapActions(['fetchProductDetails', 'updateQuantity', 'fetchCartItems', 'addToCart', 'removeProduct']),
+    addOrRemoveProduct(id, operation, quantity) {
+      if (operation == 'add') {
+        if (quantity == 0) {
+          quantity = parseInt(quantity) + 1;
+          this.addToCart(id, quantity);
+          return;
+        }
+        quantity = parseInt(quantity) + 1;
+      }
+     else {
+        if (quantity == 0) {
+          return;
+        }
+        else if (quantity == 1) {
+          quantity =  0;
+          this.removeProduct(id);
+          return;
+        }
+        quantity =  parseInt(quantity) - 1;
+      }
+      this.updateQuantity({id: id, operation: operation, newQuantity: quantity});
     }
   }
 };
@@ -92,9 +119,10 @@ td,
 th {
   color: black;
   text-align: center;
-  width: auto;
+  width: 100px;
   border: 1px solid grey;
   padding: 5px 15px;
+  border: 0;
 }
 </style>
 

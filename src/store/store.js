@@ -45,7 +45,10 @@ export const store = new Vuex.Store({
         .catch(error => console.log(error));
     },
     updateQuantity({dispatch, commit}, data) {
-      var userId = this.state.userInfo.id;
+      var userId;
+      if (this.state.userInfo) {
+        userId = this.state.userInfo.id;
+      }
       var productId= data.id;
       var newQuantity = data.newQuantity;
       console.log('updateQ', userId, productId, newQuantity);
@@ -62,8 +65,14 @@ export const store = new Vuex.Store({
         .catch(error => console.log(error));
     },
     addToCart({dispatch, commit}, prodId) {
-      var userId = this.state.userInfo.id;
+      var userId;
+      if (this.state.userInfo) {
+        userId = this.state.userInfo.id;
+      }
       var productId= prodId;
+      if (!this.state.isLoggedin) {
+        userId = 0;
+      }
       console.log('updateQ', userId, productId);
       let params = new URLSearchParams();
       params.append('userId', userId);
@@ -78,7 +87,10 @@ export const store = new Vuex.Store({
         .catch(error => console.log(error));
     },
     fetchCartItems({commit}) {
-      var userId = this.state.userInfo.id;
+      var userId;
+      if (this.state.userInfo) {
+        userId = this.state.userInfo.id;
+      }
       var params = new URLSearchParams();
       params.append('userId', userId);
       axios
@@ -90,7 +102,10 @@ export const store = new Vuex.Store({
       .catch(error => console.log(error));
     },
     removeProduct({dispatch, commit}, prodId) {
-      var userId = this.state.userInfo.id;
+      var userId;
+      if (this.state.userInfo) {
+        userId = this.state.userInfo.id;
+      }
       var params = new URLSearchParams();
       params.append('userId', userId);
       params.append('productId', prodId);
@@ -101,6 +116,31 @@ export const store = new Vuex.Store({
       })
       .catch(error => console.log(error));
     },
+    doLogin({dispatch, commit}, data) {
+      return new Promise((resolve, reject) => {
+        var params = new URLSearchParams();
+        params.append('email', data.email);
+        params.append('password', data.password);
+        axios
+          .post(
+            config.apiUrlLogin,
+            params
+          )
+          .then(response => {
+            //  this.$store.commit("signUp",response.data);
+            commit('signUp', response.data);
+            dispatch('fetchCartItems');
+            localStorage.setItem('isLoggedin', "true");
+            localStorage.setItem('user', JSON.stringify(this.state.userInfo));
+            dispatch('setLoggedin', 'true');
+            resolve(response);
+          })
+          .catch(error => {
+            console.log(error);
+            reject(error);
+          });
+    })
+    }
   },
   mutations: {
     setProductsData(state, productsData) {
@@ -159,6 +199,7 @@ export const store = new Vuex.Store({
         return state.isLoggedin;
       },
     getUser(state) {
+      console.log('userInfo', state.userInfo);
       return state.userInfo;
     },
   },

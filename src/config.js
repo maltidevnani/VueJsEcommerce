@@ -14,7 +14,8 @@ var config = {
         "apiUrlAddCart": baseUrlPhp + "/ecommerceassignment1_backend/ecommerceassignment2_backend/api/addToCart.php",
         "apiUrlGetCartProducts": baseUrlPhp + "/ecommerceassignment1_backend/ecommerceassignment2_backend/api/getCartProducts.php",
         "apiUrlUpdateQuantity": baseUrlPhp + "/ecommerceassignment1_backend/ecommerceassignment2_backend/api/updateQuantity.php",
-        "apiUrlRemoveProduct": baseUrlPhp + "/ecommerceassignment1_backend/ecommerceassignment2_backend/api/removeFromCart.php"
+        "apiUrlRemoveProduct": baseUrlPhp + "/ecommerceassignment1_backend/ecommerceassignment2_backend/api/removeFromCart.php",
+        "apiUrlUpdateUser": baseUrlPhp + "/ecommerceassignment1_backend/ecommerceassignment2_backend/api/updateUser.php"
     },
     "net": {
         "apiUrlProducts": baseUrlNet + "/ecommerceassignment2_backend/api/getProductList.php",

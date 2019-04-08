@@ -35,8 +35,6 @@
 </v-app>
 </template>
 <script>
-import axios from 'axios';
-import config from '../config';
 import {mapGetters, mapActions} from 'vuex';
 export default {
      name: 'productDetail',

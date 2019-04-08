@@ -6,7 +6,7 @@
       <v-spacer></v-spacer>
       <ShoppingCart/>
       <v-toolbar-items v-if="getLoginStatus" class="hidden-sm-and-down">
-        <v-avatar color="indigo" class="avatarCustomClass">
+        <v-avatar @click="goToProfile()" color="indigo" class="avatarCustomClass">
           <v-icon dark>account_circle</v-icon>
         </v-avatar>
       </v-toolbar-items>
@@ -93,14 +93,19 @@ export default {
       },
     },
     methods: {
-      ...mapActions(['setLoggedin']),
+      ...mapActions(['setLoggedin', 'fetchCartItems']),
       logout() {
         var a = {};
         localStorage.setItem('user', JSON.stringify(a));
         localStorage.setItem('isLoggedin', "false");
         this.setLoggedin(false);
         this.$store.commit("signUp", {});
-        this.$router.push({ name: "Login" });
+        this.$router.push({ name: "Products" });
+        this.drawer = false;
+        this.fetchCartItems();
+      },
+      goToProfile() {
+        this.$router.push({ name: "Profile" , params: { isEditProfile: true }});
       }
     },
     created() {

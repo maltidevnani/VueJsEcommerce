@@ -84,19 +84,23 @@
 <script>
 import axios from 'axios';
 import config from '../config';
+import {mapGetters, mapActions} from 'vuex';
 export default {
-  data: () => ({
-    errorMessages: "",
-    name: null,
-    email: null,
-    password: null,
-    address: null,
-    city: null,
-    formHasErrors: false,
-    show1: false,
-    counter: value => (value && value.length <= 20) || "Max 20 characters",
-    min: v => (v && v.length >= 8) || "Min 8 characters"
-  }),
+  data() {
+    return {
+      errorMessages: "",
+      name: this.$store.state.userInfo.name || null,
+      email: this.$store.state.userInfo.email || null,
+      password: null,
+      address: this.$store.state.userInfo.address || null,
+      city: this.$store.state.userInfo.city || null,
+      formHasErrors: false,
+      show1: false,
+      counter: value => (value && value.length <= 20) || "Max 20 characters",
+      min: v => (v && v.length >= 8) || "Min 8 characters",
+      isEditProfile: this.$route.params.isEditProfile || false,
+    }
+  },
   computed: {
     form() {
       return {
@@ -114,6 +118,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['doLogin']),
     passwordCheck(value) {
       return (value && value.length >= 8) || "Min 8 characters";
     },
@@ -144,24 +149,35 @@ export default {
       });
       if (!this.formHasErrors) {
         this.insertUserInfo();
+        if (!this.isEditProfile) {
         this.$router.push({ name: "Login" });
+        }
+        else {
+          this.$router.push({ name: "Products" });
+        }
       }
     },
     insertUserInfo() {
-      console.log("inserFunction called");
       var params = new URLSearchParams();
+      var url = config.apiUrlSignup
       params.append('name', this.form.name);
       params.append('email', this.form.email);
       params.append('password', this.form.password);
       params.append('address', this.form.address);
       params.append('city', this.form.city);
+      if (this.isEditProfile) {
+        params.append('id', this.$store.state.userInfo.id);
+        url = config.apiUrlUpdateUser;
+        // return console.log('edit profile');
+      }
       axios
         .post(
-          config.apiUrlSignup,
+          url,
           params
         )
         .then(response => {
           console.log(response);
+          this.doLogin({email: this.form.email, password: this.form.password})
         })
         .catch(error => console.log(error));
     },

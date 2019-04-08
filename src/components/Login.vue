@@ -39,8 +39,6 @@
 </v-app>
 </template>
 <script>
-import axios from 'axios';
-import config from '../config.js';
 import {mapGetters, mapActions} from 'vuex';
 export default {
   data() {
@@ -63,7 +61,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getUser']),
+    ...mapGetters(['getUser', 'getLoginStatus']),
       form () {
         return {
           email: this.email,
@@ -72,7 +70,7 @@ export default {
       }
     },
   methods: {
-    ...mapActions(['setLoggedin', 'fetchCartItems']),
+    ...mapActions(['setLoggedin', 'fetchCartItems', 'doLogin']),
     submit () {
       console.log("form", this.form);
       let isFormValid = true;
@@ -85,32 +83,17 @@ export default {
       if (isFormValid) {
         this.alert=false;
         console.log(alert);
-        this.doLogin();
+        this.Login();
       }
     },
-    doLogin(){
-      var params = new URLSearchParams();
-      params.append('email', this.form.email);
-      params.append('password', this.form.password);
-      axios
-        .post(
-          config.apiUrlLogin,
-          params
-        )
-        .then(response => {
-          console.log(response);
-           this.$store.commit("signUp",response.data);
-           this.$router.push({ name: 'Products'});
-           this.fetchCartItems();
-           localStorage.setItem('isLoggedin', "true");
-           var user = this.getUser;
-           localStorage.setItem('user', JSON.stringify(user));
-           this.setLoggedin(true);
-        })
-        .catch(error => {
-          console.log(error);
-          this.alert=true;
-        });
+    Login(){
+      this.doLogin({email: this.email, password: this.password})
+      .then(() => {
+        this.$router.push({ name: 'Products'});
+      })
+      .catch(() => {
+        this.alert=true;
+      });
     }
   }
 };

@@ -1,6 +1,6 @@
 var env = 'php';
 var baseUrlPhp = "http://localhost:5566";
-var baseUrlNet = "http://localhost";
+var baseUrlNet = "http://localhost:5000";
 var baseUrlMongo = "http://localhost";
 
 var config = {
@@ -18,7 +18,7 @@ var config = {
         "apiUrlUpdateUser": baseUrlPhp + "/ecommerceassignment1_backend/ecommerceassignment2_backend/api/updateUser.php"
     },
     "net": {
-        "apiUrlProducts": baseUrlNet + "/ecommerceassignment2_backend/api/getProductList.php",
+        "apiUrlProducts": baseUrlNet + "/api/Products/getProductList",
         "apiUrlReviews": baseUrlNet + "/ecommerceassignment2_backend/api/getReviewList.php",
         "apiUrlAddReview": baseUrlNet + "/ecommerceassignment2_backend/api/addReview.php",
         "apiUrlLogin": baseUrlNet + "/ecommerceassignment2_backend/api/getUserDetail.php",

@@ -49,6 +49,9 @@ export const store = new Vuex.Store({
       if (this.state.userInfo) {
         userId = this.state.userInfo.id;
       }
+      if (!userId) {
+        userId = 0;
+      }
       var productId= data.id;
       var newQuantity = data.newQuantity;
       console.log('updateQ', userId, productId, newQuantity);
@@ -91,6 +94,9 @@ export const store = new Vuex.Store({
       if (this.state.userInfo) {
         userId = this.state.userInfo.id;
       }
+      if (!userId) {
+        userId = 0;
+      }
       var params = new URLSearchParams();
       params.append('userId', userId);
       axios
@@ -105,6 +111,9 @@ export const store = new Vuex.Store({
       var userId;
       if (this.state.userInfo) {
         userId = this.state.userInfo.id;
+      }
+      if (!userId) {
+        userId = 0;
       }
       var params = new URLSearchParams();
       params.append('userId', userId);

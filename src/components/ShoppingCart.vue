@@ -25,7 +25,7 @@
             <td class="text-xs-right">{{ item.quantity * item.product_price }} $</td>
           </template>
         </table>
-        <v-btn block  color="primary" @click="dialog = false">
+        <v-btn block  color="primary" @click="checkoutAction()">
           Checkout
         </v-btn>
         <v-btn block  dark  color="pink" @click="dialog = false">
@@ -69,6 +69,11 @@ export default {
         quantity =  parseInt(quantity) - 1;
       }
       this.updateQuantity({id: id, operation: operation, newQuantity: quantity});
+    },
+    checkoutAction() {
+      console.log('::checkoutAction::')
+      this.dialog = false;
+      this.$router.push({name: 'Profile'});
     }
   }
 };
